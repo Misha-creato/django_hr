@@ -4,6 +4,7 @@ from django import forms
 
 from vacancies.models import (
     Company,
+    Vacancy,
 )
 
 
@@ -27,3 +28,38 @@ class CompanyAdmin(admin.ModelAdmin):
         'name',
         'hidden',
     ]
+
+
+class VacancyAdminForm(forms.ModelForm):
+    class Meta:
+        model = Vacancy
+        fields = '__all__'
+        widgets = {
+            'description': CKEditorWidget(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(VacancyAdminForm, self).__init__(*args, **kwargs)
+        if self.instance:
+            self.fields['company'].queryset = Company.objects.filter(hidden=False)
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(admin.ModelAdmin):
+    form = VacancyAdminForm
+    list_display = [
+        'title',
+        'company',
+        'hidden',
+    ]
+    list_filter = [
+        'company__name',
+        'hidden',
+    ]
+    ordering = [
+        'created_at',
+    ]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.filter(company__hidden=False)
