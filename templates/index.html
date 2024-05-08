@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вакансии</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Шапка -->
+<header class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{header.title}}</h1>
+            <img src="{{header.image.url}}" alt="Изображение шапки" class="img-fluid w-100">
+            <p>{{header.description|safe}}</p>
+        </div>
+    </div>
+</header>
+
+<!-- Секция с вакансиями -->
+<section class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Вакансии</h2>
+
+            <div class="form-row align-items-center">
+                <div class="col-md-3 mb-3">
+                    <input type="text" class="form-control" placeholder="Поиск по должности">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select name="company" class="custom-select">
+                        <option selected>Выберите компанию</option>
+                        {% for company in companies %}
+                            <option value="{{company}}">{{company.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <input type="text" class="form-control" placeholder="Зарплата">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <select name="experience" class="custom-select">
+                        <option selected>Опыт работы</option>
+                        {% for choice in EXPERIENCE_CHOICES %}
+                        <option value="{{choice.0}}">{{choice.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <select name="employment" class="custom-select">
+                        <option selected>Тип занятости</option>
+                        {% for choice in EMPLOYMENT_CHOICES %}
+                        <option value="{{choice.0}}">{{choice.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <select name="schedule" class="custom-select">
+                        <option selected>График работы</option>
+                        {% for choice in SCHEDULE_CHOICES %}
+                        <option value="{{choice.0}}">{{choice.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            {% for vacancy in vacancies %}
+            <div class="vacancy mt-3">
+                <h3>{{vacancy.title}}</h3>
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="{{vacancy.company.logo.url}}" alt="Логотип компании" class="img-fluid">
+                    </div>
+                    <div class="col-md-10">
+                        <p>{{vacancy.company.name}}</p>
+                        <p>Заработная плата: {{vacancy.salary}}</p>
+                        {% for choice in EMPLOYMENT_CHOICES %}
+                            {% if choice.0 == vacancy.employment %}
+                                <p>Тип занятости: {{choice.1}}</p>
+                            {% endif %}
+                        {% endfor %}
+                        {% for choice in SCHEDULE_CHOICES %}
+                            {% if choice.0 == vacancy.schedule %}
+                                <p>График работы: {{choice.1}}</p>
+                            {% endif %}
+                        {% endfor %}
+                        <p>
+                            <a href="#description1" class="btn btn-primary" data-toggle="collapse">Показать описание</a>
+                        </p>
+                        <div class="collapse" id="description1">
+                            <p>{{vacancy.description | safe}}</p>
+                            <button class="btn btn-success" data-toggle="modal" data-target="#applicationModal{{vacancy.id}}">Откликнуться</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% include 'modals/response_form.html' with vacancy=vacancy %}
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
