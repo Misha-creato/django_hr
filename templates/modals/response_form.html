@@ -1,0 +1,34 @@
+<!-- Модальное окно для отклика -->
+<div class="modal fade" id="applicationModal{{vacancy.id}}" tabindex="-1" role="dialog" aria-labelledby="applicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="applicationModalLabel">Откликнуться на вакансию</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="email">Email адрес *</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="resume">Резюме (PDF, DOC, DOCX) *</label>
+                        <input type="file" class="form-control-file" id="resume" accept=".pdf,.doc,.docx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="coverLetter">Сопроводительное письмо</label>
+                        <textarea class="form-control" id="coverLetter" rows="4"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary">Отправить</button>
+            </div>
+        </div>
+    </div>
+</div>
