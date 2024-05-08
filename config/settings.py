@@ -50,6 +50,7 @@ PROJECT_APPS = [
     'vacancies',
     'responses',
     'headers',
+    'index',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
