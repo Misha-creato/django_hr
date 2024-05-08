@@ -6,6 +6,7 @@ from vacancies.models import (
     Company,
     Vacancy,
 )
+from responses.models import VacancyResponse
 
 
 class CompanyAdminForm(forms.ModelForm):
@@ -44,6 +45,15 @@ class VacancyAdminForm(forms.ModelForm):
             self.fields['company'].queryset = Company.objects.filter(hidden=False)
 
 
+class VacancyResponseInline(admin.StackedInline):
+    model = VacancyResponse
+    extra = 0
+    ordering = [
+        'viewed',
+        'created_at',
+    ]
+
+
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
     form = VacancyAdminForm
@@ -51,6 +61,9 @@ class VacancyAdmin(admin.ModelAdmin):
         'title',
         'company',
         'hidden',
+    ]
+    inlines = [
+        VacancyResponseInline,
     ]
     list_filter = [
         'company__name',
