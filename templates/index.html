@@ -5,19 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вакансии</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .text-above {
+            position: absolute;
+            top: 70%; /* Расположение текста снизу изображения */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Ширина текста */
+            padding: 10px; /* Отступы */
+            background-color: rgba(255, 255, 255, 0.8); /* Прозрачный белый фон */
+            text-align: center; /* Центрирование текста */
+        }
+
+        .title-above {
+            position: absolute;
+            top: 30%; /* Расположение заголовка выше текста */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Ширина заголовка */
+            padding: 15px; /* Отступы */
+            background-color: rgba(255, 255, 255, 0.8); /* Прозрачный белый фон */
+            text-align: center; /* Центрирование текста */
+        }
+
+        figure img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 
 <!-- Шапка -->
 <header class="container">
     <div class="row">
-        <div class="col-md-12">
-            <h1>{{header.title}}</h1>
-            <img src="{{header.image.url}}" alt="Изображение шапки" class="img-fluid w-100">
-            <p>{{header.description|safe}}</p>
+        <div class="col-md-12 position-relative">
+            <!-- Изображение -->
+            <img src="{{ header.image.url }}" alt="Изображение шапки" class="img-fluid w-100">
+
+            <!-- Заголовок -->
+            <h1 class="title-above">{{ header.title }}</h1>
+
+            <!-- Описание -->
+            <div class="text-above">{{ header.description | safe }}</div>
         </div>
     </div>
 </header>
+
 
 <!-- Секция с вакансиями -->
 <section class="container mt-5 mb-5">
@@ -27,13 +61,13 @@
 
             <div class="form-row align-items-center">
                 <div class="col-md-3 mb-3">
-                    <input type="text" class="form-control" placeholder="Поиск по должности">
+                    <input type="text" class="form-control" placeholder="Поиск">
                 </div>
                 <div class="col-md-3 mb-3">
                     <select name="company" class="custom-select">
-                        <option selected>Выберите компанию</option>
+                        <option selected>Компания</option>
                         {% for company in companies %}
-                            <option value="{{company}}">{{company.name}}</option>
+                        <option value="{{company}}">{{company.name}}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -58,7 +92,7 @@
                 </div>
                 <div class="col-md-2 mb-3">
                     <select name="schedule" class="custom-select">
-                        <option selected>График работы</option>
+                        <option selected>График</option>
                         {% for choice in SCHEDULE_CHOICES %}
                         <option value="{{choice.0}}">{{choice.1}}</option>
                         {% endfor %}
@@ -67,35 +101,37 @@
             </div>
 
             {% for vacancy in vacancies %}
-            <div class="vacancy mt-3">
+            <a class="card col-12 p-3 vacancy mt-3 text-decoration-none text-dark" href="#description{{vacancy.id}}"
+               data-toggle="collapse">
                 <h3>{{vacancy.title}}</h3>
                 <div class="row">
                     <div class="col-md-2">
-                        <img src="{{vacancy.company.logo.url}}" alt="Логотип компании" class="img-fluid">
+                        {% if vacancy.company.logo %}
+                        <img src="{{vacancy.company.thumbnail.url}}" alt="Логотип компании" class="img-fluid">
+                        {% endif %}
                     </div>
                     <div class="col-md-10">
-                        <p>{{vacancy.company.name}}</p>
+                        <h5>{{vacancy.company.name}}</h5>
                         <p>Заработная плата: {{vacancy.salary}}</p>
                         {% for choice in EMPLOYMENT_CHOICES %}
-                            {% if choice.0 == vacancy.employment %}
-                                <p>Тип занятости: {{choice.1}}</p>
-                            {% endif %}
+                        {% if choice.0 == vacancy.employment %}
+                        <p>Тип занятости: {{choice.1}}</p>
+                        {% endif %}
                         {% endfor %}
                         {% for choice in SCHEDULE_CHOICES %}
-                            {% if choice.0 == vacancy.schedule %}
-                                <p>График работы: {{choice.1}}</p>
-                            {% endif %}
+                        {% if choice.0 == vacancy.schedule %}
+                        <p>График работы: {{choice.1}}</p>
+                        {% endif %}
                         {% endfor %}
-                        <p>
-                            <a href="#description1" class="btn btn-primary" data-toggle="collapse">Показать описание</a>
-                        </p>
-                        <div class="collapse" id="description1">
+                        <div class="collapse vacancy_description" id="description{{vacancy.id}}">
                             <p>{{vacancy.description | safe}}</p>
-                            <button class="btn btn-success" data-toggle="modal" data-target="#applicationModal{{vacancy.id}}">Откликнуться</button>
+                            <button class="btn btn-success" data-toggle="modal"
+                                    data-target="#applicationModal{{vacancy.id}}">Откликнуться
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             {% include 'modals/response_form.html' with vacancy=vacancy %}
             <hr>
