@@ -15,7 +15,10 @@ class CompanyAdminForm(forms.ModelForm):
         model = Company
         fields = '__all__'
         widgets = {
-            'description': CKEditor5Widget(),
+            'description': CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name='extends'
+            ),
         }
 
 
@@ -34,7 +37,10 @@ class VacancyAdminForm(forms.ModelForm):
         model = Vacancy
         fields = '__all__'
         widgets = {
-            'description': CKEditor5Widget(),
+            'description': CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name='extends'
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -48,5 +54,8 @@ class HeaderFormAdmin(forms.ModelForm):
         model = Header
         fields = '__all__'
         widgets = {
-            'description': CKEditor5Widget(),
+            'description': CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name='extends'
+            ),
         }
