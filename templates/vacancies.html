@@ -11,15 +11,20 @@
         <div class="col-md-10">
             <h5>{{vacancy.company.name}}</h5>
             <p>Заработная плата: {{vacancy.salary}}</p>
+            {% for choice in EXPERIENCE_CHOICES %}
+                {% if choice.0 == vacancy.experience %}
+                    <p>Опыт работы: {{choice.1}}</p>
+                {% endif %}
+            {% endfor %}
             {% for choice in EMPLOYMENT_CHOICES %}
-            {% if choice.0 == vacancy.employment %}
-            <p>Тип занятости: {{choice.1}}</p>
-            {% endif %}
+                {% if choice.0 == vacancy.employment %}
+                    <p>Тип занятости: {{choice.1}}</p>
+                {% endif %}
             {% endfor %}
             {% for choice in SCHEDULE_CHOICES %}
-            {% if choice.0 == vacancy.schedule %}
-            <p>График работы: {{choice.1}}</p>
-            {% endif %}
+                {% if choice.0 == vacancy.schedule %}
+                    <p>График работы: {{choice.1}}</p>
+                {% endif %}
             {% endfor %}
             <div class="collapse vacancy_description" id="description{{vacancy.id}}">
                 <p>{{vacancy.description | safe}}</p>
