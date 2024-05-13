@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,6 +38,15 @@
 </head>
 <body>
 
+{% for message in messages %}
+<div class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {{ message }}
+</div>
+{% endfor %}
+
 <!-- Шапка -->
 <header class="container">
     <div class="row">
@@ -59,24 +70,24 @@
         <div class="col-md-12">
             <h2>Вакансии</h2>
 
-            <div class="form-row align-items-center">
-                <div class="col-md-3 mb-3">
-                    <input type="text" class="form-control" placeholder="Поиск">
+            <form id="filter-form" class="form-row align-items-center" method="get">
+                <div class="col-md-2 mb-3">
+                    <input type="text" class="form-control" placeholder="Поиск" name="search">
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-2 mb-3">
                     <select name="company" class="custom-select">
-                        <option selected>Компания</option>
+                        <option value="">Компания</option>
                         {% for company in companies %}
-                        <option value="{{company}}">{{company.name}}</option>
+                        <option value="{{company.id}}">{{company.name}}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-2 mb-3">
-                    <input type="text" class="form-control" placeholder="Зарплата">
+                    <input type="text" class="form-control" placeholder="Зарплата" name="salary">
                 </div>
                 <div class="col-md-2 mb-3">
                     <select name="experience" class="custom-select">
-                        <option selected>Опыт работы</option>
+                        <option value="">Опыт работы</option>
                         {% for choice in EXPERIENCE_CHOICES %}
                         <option value="{{choice.0}}">{{choice.1}}</option>
                         {% endfor %}
@@ -84,7 +95,7 @@
                 </div>
                 <div class="col-md-2 mb-3">
                     <select name="employment" class="custom-select">
-                        <option selected>Тип занятости</option>
+                        <option value="">Тип занятости</option>
                         {% for choice in EMPLOYMENT_CHOICES %}
                         <option value="{{choice.0}}">{{choice.1}}</option>
                         {% endfor %}
@@ -92,50 +103,19 @@
                 </div>
                 <div class="col-md-2 mb-3">
                     <select name="schedule" class="custom-select">
-                        <option selected>График</option>
+                        <option value="">График</option>
                         {% for choice in SCHEDULE_CHOICES %}
                         <option value="{{choice.0}}">{{choice.1}}</option>
                         {% endfor %}
                     </select>
                 </div>
+            </form>
+
+            <div id="vacancies_box">
+
+                {% include 'vacancies.html' %}
+
             </div>
-
-            {% for vacancy in vacancies %}
-            <a class="card col-12 p-3 vacancy mt-3 text-decoration-none text-dark" href="#description{{vacancy.id}}"
-               data-toggle="collapse">
-                <h3>{{vacancy.title}}</h3>
-                <div class="row">
-                    <div class="col-md-2">
-                        {% if vacancy.company.logo %}
-                        <img src="{{vacancy.company.thumbnail.url}}" alt="Логотип компании" class="img-fluid">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-10">
-                        <h5>{{vacancy.company.name}}</h5>
-                        <p>Заработная плата: {{vacancy.salary}}</p>
-                        {% for choice in EMPLOYMENT_CHOICES %}
-                        {% if choice.0 == vacancy.employment %}
-                        <p>Тип занятости: {{choice.1}}</p>
-                        {% endif %}
-                        {% endfor %}
-                        {% for choice in SCHEDULE_CHOICES %}
-                        {% if choice.0 == vacancy.schedule %}
-                        <p>График работы: {{choice.1}}</p>
-                        {% endif %}
-                        {% endfor %}
-                        <div class="collapse vacancy_description" id="description{{vacancy.id}}">
-                            <p>{{vacancy.description | safe}}</p>
-                            <button class="btn btn-success" data-toggle="modal"
-                                    data-target="#applicationModal{{vacancy.id}}">Откликнуться
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            {% include 'modals/response_form.html' with vacancy=vacancy %}
-            <hr>
-            {% endfor %}
         </div>
     </div>
 </section>
@@ -143,6 +123,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/search_and_filter.js' %}"></script>
 
 </body>
 </html>
