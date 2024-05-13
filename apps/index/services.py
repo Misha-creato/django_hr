@@ -1,8 +1,12 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import (
+    Q,
+    IntegerField,
+)
+from django.db.models.expressions import RawSQL
 
 from index import check
-from index.constants import (
+from utils.constants import (
     EXPERIENCE_CHOICES,
     EMPLOYMENT_CHOICES,
     SCHEDULE_CHOICES,
@@ -26,12 +30,12 @@ def get_context_data(request):
         request=request,
     )
     return {
-            'header': header,
-            'EXPERIENCE_CHOICES': EXPERIENCE_CHOICES,
-            'EMPLOYMENT_CHOICES': EMPLOYMENT_CHOICES,
-            'SCHEDULE_CHOICES': SCHEDULE_CHOICES,
-            'vacancies': vacancies,
-            'companies': companies,
+        'header': header,
+        'EXPERIENCE_CHOICES': EXPERIENCE_CHOICES,
+        'EMPLOYMENT_CHOICES': EMPLOYMENT_CHOICES,
+        'SCHEDULE_CHOICES': SCHEDULE_CHOICES,
+        'vacancies': vacancies,
+        'companies': companies,
     }
 
 
@@ -121,11 +125,19 @@ def filter_vacancies(request, vacancies):
     filters = get_filters(
         data=data,
     )
+    vacancies = vacancies.annotate(
+        salary_number=RawSQL(
+            "COALESCE(NULLIF(REGEXP_REPLACE(salary, '\D','','g'), '')::numeric, 0)",
+            params=[],
+            output_field=IntegerField()
+        )
+    )
+    salary = int(data['salary'].replace(' ', '')) if data['salary'] else 0
     try:
         vacancies = vacancies.filter(
             Q(company__name__icontains=data['search']) | Q(title__icontains=data['search']),
             **filters,
-            salary__icontains=data['salary'],
+            salary_number__gte=salary,
         )
     except Exception as exc:
         print(f'Возникла ошибка при фильтрации {exc}')
@@ -144,4 +156,3 @@ def get_filters(data):
         if data[key] != '':
             filters[key] = data[key]
     return filters
-
