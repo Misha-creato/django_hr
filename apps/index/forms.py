@@ -1,4 +1,3 @@
-from ckeditor.widgets import CKEditorWidget
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from django import forms
@@ -59,3 +58,4 @@ class HeaderFormAdmin(forms.ModelForm):
                 config_name='extends'
             ),
         }
+
