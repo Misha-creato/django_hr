@@ -8,27 +8,28 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+                <form action="{% url 'send_response' vacancy.id %}" method="post" enctype="multipart/form-data">
+
             <div class="modal-body">
-                <form action="" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="email">Email адрес *</label>
-                        <input type="email" class="form-control" id="email" required>
+                        <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="form-group">
                         <label for="resume">Резюме (PDF, DOC, DOCX) *</label>
-                        <input type="file" class="form-control-file" id="resume" accept=".pdf,.doc,.docx" required>
+                        <input type="file" class="form-control-file" id="resume" accept=".pdf,.doc,.docx" name="resume" required>
                     </div>
                     <div class="form-group">
-                        <label for="coverLetter">Сопроводительное письмо</label>
-                        <textarea class="form-control" id="coverLetter" rows="4"></textarea>
+                        <label for="covering_letter">Сопроводительное письмо</label>
+                        <textarea class="form-control" id="covering_letter" rows="4" name="covering_letter"></textarea>
                     </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary">Отправить</button>
+                <button type="submit" class="btn btn-primary">Отправить</button>
             </div>
+                </form>
         </div>
     </div>
 </div>
