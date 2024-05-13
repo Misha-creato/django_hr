@@ -1,0 +1,37 @@
+{% for vacancy in vacancies %}
+<a class="card col-12 p-3 vacancy mt-3 text-decoration-none text-dark" href="#description{{vacancy.id}}"
+   data-toggle="collapse">
+    <h3>{{vacancy.title}}</h3>
+    <div class="row">
+        <div class="col-md-2">
+            {% if vacancy.company.logo %}
+            <img src="{{vacancy.company.thumbnail.url}}" alt="Логотип компании" class="img-fluid">
+            {% endif %}
+        </div>
+        <div class="col-md-10">
+            <h5>{{vacancy.company.name}}</h5>
+            <p>Заработная плата: {{vacancy.salary}}</p>
+            {% for choice in EMPLOYMENT_CHOICES %}
+            {% if choice.0 == vacancy.employment %}
+            <p>Тип занятости: {{choice.1}}</p>
+            {% endif %}
+            {% endfor %}
+            {% for choice in SCHEDULE_CHOICES %}
+            {% if choice.0 == vacancy.schedule %}
+            <p>График работы: {{choice.1}}</p>
+            {% endif %}
+            {% endfor %}
+            <div class="collapse vacancy_description" id="description{{vacancy.id}}">
+                <p>{{vacancy.description | safe}}</p>
+                <button class="btn btn-success" data-toggle="modal"
+                        data-target="#applicationModal{{vacancy.id}}">Откликнуться
+                </button>
+            </div>
+        </div>
+    </div>
+</a>
+
+{% include 'modals/response_form.html' with vacancy=vacancy %}
+
+<hr>
+{% endfor %}
