@@ -7,7 +7,7 @@ from solo.models import SingletonModel
 from django.db import models
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from index.constants import (
+from utils.constants import (
     EXPERIENCE_CHOICES,
     EMPLOYMENT_CHOICES,
     SCHEDULE_CHOICES,
@@ -48,6 +48,9 @@ class Company(models.Model):
 
     def __make_thumbnail(self):
         with Image.open(self.logo) as img:
+            if img.mode in ('RGBA', 'LA'):
+                img = img.convert('RGB')
+
             img.thumbnail((LOGO_SIZE_WIDTH, LOGO_SIZE_HEIGHT))
             thumb = io.BytesIO()
             img.save(thumb, format='JPEG', quality=90)
