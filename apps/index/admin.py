@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import F
 
 from solo.admin import SingletonModelAdmin
 
@@ -33,6 +34,11 @@ class CompanyAdmin(admin.ModelAdmin):
 
 class VacancyResponseInline(admin.StackedInline):
     model = VacancyResponse
+    readonly_fields = [
+        'email',
+        'resume',
+        'covering_letter',
+    ]
     ordering = [
         'viewed',
         'created_at',
@@ -49,6 +55,7 @@ class VacancyAdmin(admin.ModelAdmin):
         'title',
         'company',
         'hidden',
+        'company_hidden',
     ]
     inlines = [
         VacancyResponseInline,
@@ -64,6 +71,16 @@ class VacancyAdmin(admin.ModelAdmin):
     ordering = [
         'created_at',
     ]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.annotate(company_hidden=F('company__hidden'))
+
+    def company_hidden(self, instance):
+        return instance.company_hidden
+
+    company_hidden.boolean = True
+    company_hidden.short_description = 'Компания скрыта'
 
 
 @admin.register(Header)
