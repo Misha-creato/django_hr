@@ -70,7 +70,7 @@
         <div class="col-md-12">
             <h2>Вакансии</h2>
 
-            <form id="filter-form" class="form-row align-items-center" method="get">
+            <form id="filter-form" class="form-row align-items-top py-3" method="get">
                 <div class="col-md-2 mb-3">
                     <input type="text" class="form-control" placeholder="Поиск" name="search">
                 </div>
@@ -83,7 +83,11 @@
                     </select>
                 </div>
                 <div class="col-md-2 mb-3">
-                    <input type="text" class="form-control" placeholder="Зарплата" name="salary">
+                    <input type="text" class="form-control" placeholder="Зарплата" name="salary"
+                           id="number" maxlength="20">
+                    <div class="invalid-feedback">
+                        Принимается только число
+                    </div>
                 </div>
                 <div class="col-md-2 mb-3">
                     <select name="experience" class="custom-select">
@@ -125,6 +129,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/search_and_filter.js' %}"></script>
+<script src="{% static 'js/number_input.js' %}"></script>
 
 </body>
 </html>
