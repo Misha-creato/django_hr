@@ -12,7 +12,12 @@ from index.models import (
 class CompanyAdminForm(forms.ModelForm):
     class Meta:
         model = Company
-        fields = '__all__'
+        fields = [
+            'name',
+            'description',
+            'logo',
+            'hidden',
+        ]
         widgets = {
             'description': CKEditor5Widget(
                 attrs={"class": "django_ckeditor_5"},
