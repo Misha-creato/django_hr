@@ -1,4 +1,5 @@
 import io
+
 from PIL import Image
 
 from solo.models import SingletonModel
@@ -6,8 +7,15 @@ from solo.models import SingletonModel
 from django.db import models
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from index.constants import (
+    EXPERIENCE_CHOICES,
+    EMPLOYMENT_CHOICES,
+    SCHEDULE_CHOICES,
+)
 
-LOGO_SIZE = (100, 100)
+
+LOGO_SIZE_WIDTH = 100
+LOGO_SIZE_HEIGHT = 100
 
 
 class Company(models.Model):
@@ -40,7 +48,7 @@ class Company(models.Model):
 
     def __make_thumbnail(self):
         with Image.open(self.logo) as img:
-            img.thumbnail(LOGO_SIZE)
+            img.thumbnail((LOGO_SIZE_WIDTH, LOGO_SIZE_HEIGHT))
             thumb = io.BytesIO()
             img.save(thumb, format='JPEG', quality=90)
 
@@ -63,24 +71,6 @@ class Company(models.Model):
 
 
 class Vacancy(models.Model):
-    EXPERIENCE_CHOICES = (
-        ('0_', 'Не имеет значения',),
-        ('1_3', 'От 1 до 3 лет',),
-        ('3_6', 'От 3 до 6 лет',),
-        ('6_', 'От 6 лет',),
-    )
-    EMPLOYMENT_CHOICES = (
-        ('full', 'Полная занятость',),
-        ('part', 'Частичная занятость',),
-        ('probation', 'Стажировка',),
-    )
-    SCHEDULE_CHOICES = (
-        ('full_day', 'Полный день',),
-        ('shift', 'Сменный график',),
-        ('flexible', 'Гибкий график',),
-        ('remote', 'Удаленная работа',),
-        ('fly_in_fly_out', 'Вахтовый метод',),
-    )
     company = models.ForeignKey(
         verbose_name='Компания',
         to=Company,
@@ -127,6 +117,7 @@ class Vacancy(models.Model):
 
     class Meta:
         db_table = 'vacancies'
+        ordering = ['-created_at']
         verbose_name = 'Вакансия'
         verbose_name_plural = 'Вакансии'
 
@@ -182,7 +173,8 @@ class Header(SingletonModel):
     )
     image = models.ImageField(
         verbose_name='Изображение',
-        upload_to='headers'
+        upload_to='headers',
+        help_text="Пожалуйста, загрузите изображение в формате JPG, PNG",
     )
 
     def __str__(self):
