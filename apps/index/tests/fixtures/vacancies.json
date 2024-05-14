@@ -1,0 +1,60 @@
+[
+  {
+    "model": "index.vacancy",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "title": "Новая вакансия",
+      "description": "Описание новой вакансии",
+      "salary": "Не указана",
+      "experience": "0_",
+      "employment": "full",
+      "schedule": "shift",
+      "hidden": false,
+      "created_at": "2024-05-10T10:43:20.213Z"
+    }
+  },
+  {
+    "model": "index.vacancy",
+    "pk": 2,
+    "fields": {
+      "company": 1,
+      "title": "Вакансия для теста",
+      "description": "Мы ищем кого-то на должность такую-то",
+      "salary": "1000 тг",
+      "experience": "1_3",
+      "employment": "part",
+      "schedule": "shift",
+      "hidden": false,
+      "created_at": "2024-05-10T10:56:11.469Z"
+    }
+  },
+  {
+    "model": "index.vacancy",
+    "pk": 3,
+    "fields": {
+      "company": 2,
+      "title": "Вакансия 2",
+      "description": "Описание вакансии 2",
+      "salary": "Не указана",
+      "experience": "1_3",
+      "employment": "probation",
+      "schedule": "flexible",
+      "created_at": "2024-05-13T02:29:17.039Z"
+    }
+  },
+  {
+    "model": "index.vacancy",
+    "pk": 4,
+    "fields": {
+      "company": 2,
+      "title": "И еще одна вакансия",
+      "description": "Влюбленный волк уже не хищник",
+      "salary": "1 000 000 тг на руки",
+      "experience": "1_3",
+      "employment": "probation",
+      "schedule": "remote",
+      "created_at": "2024-05-13T15:03:50.789Z"
+    }
+  }
+]

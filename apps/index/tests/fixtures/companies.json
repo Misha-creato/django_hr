@@ -1,0 +1,18 @@
+[
+  {
+    "model": "index.company",
+    "pk": 1,
+    "fields": {
+      "name": "Новая компания",
+      "description": "Описание для новой компании"
+    }
+  },
+  {
+    "model": "index.company",
+    "pk": 2,
+    "fields": {
+      "name": "Другая компания",
+      "description": "Другая компания что-то там"
+    }
+  }
+]
