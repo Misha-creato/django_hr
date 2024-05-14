@@ -91,6 +91,8 @@ def get_vacancy(request, pk) -> (int, Vacancy):
             message='Возникла ошибка при поиске вакансии',
         )
         return 500, None
+    if vacancy is None:
+        return 404, None
     return 200, vacancy
 
 
