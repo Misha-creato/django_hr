@@ -54,6 +54,7 @@ def is_resume_valid(request):
     extension = os.path.splitext(resume.name)[1]
     valid_extensions = ['.doc', '.docx', '.pdf']
     if extension not in valid_extensions:
+        print(f'Расширение файла не валидно')
         messages.error(
             request=request,
             message='Недопустимый тип файла резюме',
