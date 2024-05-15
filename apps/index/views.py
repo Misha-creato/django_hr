@@ -12,22 +12,35 @@ from index.services import (
     filter_vacancies,
 )
 
+from utils.constants import (
+    EXPERIENCE_CHOICES,
+    EMPLOYMENT_CHOICES,
+    SCHEDULE_CHOICES,
+)
+
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        context = get_context_data(
-            request=request,
-        )
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            context['vacancies'] = filter_vacancies(
+            vacancies = filter_vacancies(
                 request=request,
             )
+            context = {
+                'vacancies': vacancies,
+                'EXPERIENCE_CHOICES': EXPERIENCE_CHOICES,
+                'EMPLOYMENT_CHOICES': EMPLOYMENT_CHOICES,
+                'SCHEDULE_CHOICES': SCHEDULE_CHOICES,
+            }
             html = render_to_string(
                 template_name="vacancies.html",
                 context=context,
                 request=request,
             )
             return JsonResponse(data=html, safe=False)
+        else:
+            context = get_context_data(
+                request=request,
+            )
         return render(
             request=request,
             template_name='index.html',
