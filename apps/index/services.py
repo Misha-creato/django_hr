@@ -6,16 +6,16 @@ from django.db.models import (
 from django.db.models.expressions import RawSQL
 
 from index import check
-from utils.constants import (
-    EXPERIENCE_CHOICES,
-    EMPLOYMENT_CHOICES,
-    SCHEDULE_CHOICES,
-)
 from index.models import (
     Vacancy,
     Company,
     Header,
     VacancyResponse,
+)
+from utils.constants import (
+    EXPERIENCE_CHOICES,
+    EMPLOYMENT_CHOICES,
+    SCHEDULE_CHOICES,
 )
 
 
