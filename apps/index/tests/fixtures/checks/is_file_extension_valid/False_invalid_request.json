@@ -1,3 +1,8 @@
 {
-  "file_path": "test_resume_file.pages"
+  "file_path": "test_resume_file.pages",
+  "valid_extensions": [
+    ".doc",
+    ".docx",
+    ".pdf"
+  ]
 }
