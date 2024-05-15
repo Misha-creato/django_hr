@@ -83,7 +83,11 @@ def get_companies(request):
 
 def get_vacancy(request, pk) -> (int, Vacancy):
     try:
-        vacancy = Vacancy.objects.filter(pk=pk).first()
+        vacancy = Vacancy.objects.filter(
+            company__hidden=False,
+            hidden=False,
+            pk=pk
+        ).first()
     except Exception as exc:
         print(f'Возникла ошибка при поиске вакансии {exc}')
         messages.error(
@@ -92,15 +96,29 @@ def get_vacancy(request, pk) -> (int, Vacancy):
         )
         return 500, None
     if vacancy is None:
+        messages.error(
+            request=request,
+            message='Вакансия не найдена',
+        )
         return 404, None
     return 200, vacancy
 
 
-def send_response(request, vacancy):
-    if not check.response_data(request=request):
-        return 400
+def send_response(request, pk):
+    status, vacancy = get_vacancy(
+        request=request,
+        pk=pk,
+    )
+    if status != 200:
+        return status
     data = request.POST
     files = request.FILES
+    if not check.response_data(data=data, files=files):
+        messages.error(
+            request=request,
+            message='Невалидные данные',
+        )
+        return 400
     try:
         VacancyResponse.objects.create(
             vacancy=vacancy,
@@ -122,14 +140,17 @@ def send_response(request, vacancy):
     return 200
 
 
-def filter_vacancies(request, vacancies):
+def filter_vacancies(request):
+    vacancies = get_vacancies(
+        request=request,
+    )
     data = request.GET
     filters = get_filters(
         data=data,
     )
     vacancies = vacancies.annotate(
         salary_number=RawSQL(
-            "COALESCE(NULLIF(REGEXP_REPLACE(salary, '\D','','g'), '')::numeric, 0)",
+            sql="COALESCE(NULLIF(REGEXP_REPLACE(salary, '\D','','g'), '')::numeric, 0)",
             params=[],
             output_field=IntegerField()
         )
