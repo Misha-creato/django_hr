@@ -1,71 +1,83 @@
 import os.path
 
-from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+from utils.constants import RESUME_VALID_EXTENSIONS
 
-def required_data(request):
-    data = request.POST
+
+# def required_data(data):
+#     keys = [
+#         'email',
+#     ]
+#     for key in keys:
+#         if not data.get(key):
+#             print(f'Отсутствие ключа {key}')
+#             return False
+#     return True
+#
+
+# def required_files(files):
+#     keys = [
+#         'resume',
+#     ]
+#     for key in keys:
+#         if not files.get(key):
+#             print(f'Отсутствие файла {key}')
+#             return False
+#     return True
+
+
+def required_data_and_files(data, files):
     keys = [
-        ('email', 'адрес электронной почты'),
+        ('email', data),
+        ('resume', files),
     ]
-    for key, field_name in keys:
-        if data.get(key) is None:
-            messages.error(
-                request=request,
-                message=f'Поле {field_name} обязательно для заполнения'
-            )
+    for key, source in keys:
+        if not source.get(key):
+            print(f'Отсутствует {key}')
             return False
-        return True
+    return True
 
 
-def required_files(request):
-    files = request.FILES
-    keys = [
-        ('resume', 'резюме'),
-    ]
-    for key, field_name in keys:
-        if files.get(key) is None:
-            messages.error(
-                request=request,
-                message=f'Файл {field_name} обязателен для загрузки'
-            )
-            return False
-        return True
-
-
-def is_email_valid(request):
-    email = request.POST.get('email')
+def is_email_valid(email):
     try:
         validate_email(email)
     except ValidationError as exc:
         print(f'Адрес электронной почты не валиден {exc}')
-        messages.error(
-            request=request,
-            message='Адрес электронной почты некорректный',
-        )
         return False
     return True
 
 
-def is_resume_valid(request):
-    resume = request.FILES['resume']
-    extension = os.path.splitext(resume.name)[1]
-    valid_extensions = ['.doc', '.docx', '.pdf']
-    if extension not in valid_extensions:
-        print(f'Расширение файла не валидно')
-        messages.error(
-            request=request,
-            message='Недопустимый тип файла резюме',
-        )
+def is_file_extension_valid(file, extensions):
+    file_extension = os.path.splitext(file.name)[1]
+    if file_extension not in extensions:
+        print(f'Расширение файла {file.name} не валидно')
         return False
     return True
 
 
-def response_data(request):
-    if not required_data(request=request) or not required_files(request=request):
-        return False
-    if not is_email_valid(request=request) or not is_resume_valid(request=request):
-        return False
+def response_data(data, files):
+    checks = [
+        (required_data_and_files,
+         {
+             'data': data,
+             'files': files,
+         }
+         ),
+        (is_email_valid,
+         {
+             'email': data.get('email'),
+         }
+         ),
+        (is_file_extension_valid,
+         {
+             'file': files.get('resume'),
+             'extensions': RESUME_VALID_EXTENSIONS,
+         }
+         ),
+    ]
+    for check, arguments in checks:
+        if not check(**arguments):
+            return False
     return True
