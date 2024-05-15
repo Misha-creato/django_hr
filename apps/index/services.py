@@ -41,7 +41,7 @@ def get_context_data(request):
 
 def get_header(request):
     try:
-        header = Header.objects.filter().first()
+        header = Header.objects.get()
     except Exception as exc:
         print(f'Возникла ошибка при загрузке шапки: {exc}')
         messages.warning(
@@ -57,7 +57,7 @@ def get_vacancies(request):
         vacancies = Vacancy.objects.filter(
             company__hidden=False,
             hidden=False
-        )
+        ).prefetch_related('company')
     except Exception as exc:
         print(f'Возникла ошибка при загрузке вакансий: {exc}')
         messages.warning(
