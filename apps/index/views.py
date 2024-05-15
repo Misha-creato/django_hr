@@ -8,7 +8,6 @@ from django.shortcuts import (
 
 from index.services import (
     get_context_data,
-    get_vacancy,
     send_response,
     filter_vacancies,
 )
@@ -22,7 +21,6 @@ class IndexView(View):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             context['vacancies'] = filter_vacancies(
                 request=request,
-                vacancies=context['vacancies'],
             )
             html = render_to_string(
                 template_name="vacancies.html",
@@ -39,13 +37,8 @@ class IndexView(View):
 
 class SendResponseView(View):
     def post(self, request, pk):
-        status, vacancy = get_vacancy(
+        send_response(
             request=request,
             pk=pk,
         )
-        if status == 200:
-            send_response(
-                request=request,
-                vacancy=vacancy,
-            )
         return redirect('index')
