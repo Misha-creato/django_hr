@@ -16,3 +16,8 @@ SCHEDULE_CHOICES = (
     ('remote', 'Удаленная работа',),
     ('fly_in_fly_out', 'Вахтовый метод',),
 )
+RESUME_VALID_EXTENSIONS = [
+    '.doc',
+    '.docx',
+    '.pdf',
+]
