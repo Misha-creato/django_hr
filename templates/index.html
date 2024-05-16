@@ -52,8 +52,9 @@
     <div class="row">
         <div class="col-md-12 position-relative">
             <!-- Изображение -->
-            <img src="{{ header.image.url }}" alt="Изображение шапки" class="img-fluid w-100">
-
+            {% if header.image %}
+                <img src="{{ header.image.url }}" alt="Изображение шапки" class="img-fluid w-100">
+            {% endif %}
             <!-- Заголовок -->
             <h1 class="title-above">{{ header.title }}</h1>
 
