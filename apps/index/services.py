@@ -3,6 +3,7 @@ from django.db.models import (
     Q,
     IntegerField,
 )
+from django.db.models.query import QuerySet
 from django.db.models.expressions import RawSQL
 
 from index import check
@@ -19,7 +20,7 @@ from utils.constants import (
 )
 
 
-def get_context_data(request):
+def get_context_data(request) -> dict:
     header = get_header(
         request=request,
     )
@@ -39,9 +40,9 @@ def get_context_data(request):
     }
 
 
-def get_header(request):
+def get_header(request) -> Header:
     try:
-        header = Header.objects.get()
+        header = Header.get_solo()
     except Exception as exc:
         print(f'Возникла ошибка при загрузке шапки: {exc}')
         messages.warning(
@@ -52,7 +53,7 @@ def get_header(request):
     return header
 
 
-def get_vacancies(request):
+def get_vacancies(request) -> QuerySet:
     try:
         vacancies = Vacancy.objects.filter(
             company__hidden=False,
@@ -68,7 +69,7 @@ def get_vacancies(request):
     return vacancies
 
 
-def get_companies(request):
+def get_companies(request) -> QuerySet:
     try:
         companies = Company.objects.filter(hidden=False)
     except Exception as exc:
@@ -104,7 +105,7 @@ def get_vacancy(request, pk) -> (int, Vacancy):
     return 200, vacancy
 
 
-def send_response(request, pk):
+def send_response(request, pk) -> int:
     status, vacancy = get_vacancy(
         request=request,
         pk=pk,
@@ -140,7 +141,7 @@ def send_response(request, pk):
     return 200
 
 
-def filter_vacancies(request):
+def filter_vacancies(request) -> QuerySet:
     vacancies = get_vacancies(
         request=request,
     )
@@ -167,7 +168,7 @@ def filter_vacancies(request):
     return vacancies
 
 
-def get_filters(data):
+def get_filters(data) -> dict:
     keys = [
         'company',
         'experience',
