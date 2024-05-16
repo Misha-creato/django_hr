@@ -4,11 +4,10 @@ import os.path
 from django.test import TestCase
 
 from index.check import (
-    # required_data,
-    # required_files,
+    required_data,
+    required_files,
     is_email_valid,
     is_file_extension_valid,
-    required_data_and_files,
 )
 
 
@@ -21,69 +20,46 @@ class ChecksTest(TestCase):
         cls.path = f'{CUR_DIR}/fixtures/checks'
         cls.files = f'{CUR_DIR}/fixtures/files'
 
-    # def test_required_data(self):
-    #     path = f'{self.path}/required_data'
-    #
-    #     fixtures = (
-    #         (True, 'valid'),
-    #         (False, 'invalid'),
-    #     )
-    #
-    #     for flag, name in fixtures:
-    #         fixture = f'{flag}_{name}'
-    #         with open(f'{path}/{fixture}_request.json') as file:
-    #             data = json.load(file)
-    #
-    #         returned_flag = required_data(
-    #             data=data,
-    #         )
-    #
-    #         self.assertEqual(returned_flag, flag, msg=fixture)
-
-    # def test_required_files(self):
-    #     path = f'{self.path}/required_files'
-    #
-    #     fixtures = (
-    #         (True, 'valid'),
-    #         (False, 'invalid'),
-    #     )
-    #
-    #     for flag, name in fixtures:
-    #         fixture = f'{flag}_{name}'
-    #         with open(f'{path}/{fixture}_request.json') as file:
-    #             data = json.load(file)
-    #
-    #         if data.get('file_path') is not None:
-    #             data['resume'] = open(f"{self.files}/{data['file_path']}", 'rb')
-    #
-    #         returned_flag = required_files(
-    #             files=data,
-    #         )
-    #
-    #         self.assertEqual(returned_flag, flag, msg=fixture)
-
-    def test_required_data_and_files(self):
-        path = f'{self.path}/required_data_and_files'
+    def test_required_data(self):
+        path = f'{self.path}/required_data'
 
         fixtures = (
             (True, 'valid'),
-            (False, 'required_email'),
-            (False, 'required_resume'),
+            (False, 'invalid'),
         )
 
         for flag, name in fixtures:
             fixture = f'{flag}_{name}'
             with open(f'{path}/{fixture}_request.json') as file:
-                fixture_data = json.load(file)
+                data = json.load(file)
 
-            data = fixture_data['data']
-            files = fixture_data['files']
-
-            if files.get('file_path') is not None:
-                files['resume'] = open(f"{self.files}/{files['file_path']}", 'rb')
-
-            returned_flag = required_data_and_files(
+            returned_flag = required_data(
                 data=data,
+            )
+
+            self.assertEqual(returned_flag, flag, msg=fixture)
+
+    def test_required_files(self):
+        path = f'{self.path}/required_files'
+
+        fixtures = (
+            (True, 'valid'),
+            (False, 'invalid'),
+        )
+
+        for flag, name in fixtures:
+            fixture = f'{flag}_{name}'
+            with open(f'{path}/{fixture}_request.json') as file:
+                data = json.load(file)
+
+            files = {}
+            file_path = data.get('file_path')
+
+            if file_path is not None:
+                with open(f'{self.files}/{file_path}', 'rb') as file:
+                    files['resume'] = file
+
+            returned_flag = required_files(
                 files=files,
             )
 
@@ -121,7 +97,8 @@ class ChecksTest(TestCase):
             with open(f'{path}/{fixture}_request.json') as file:
                 data = json.load(file)
 
-            file = open(f"{self.files}/{data['file_path']}", 'rb')
+            with open(f"{self.files}/{data['file_path']}", 'rb') as file:
+                file = file
 
             returned_flag = is_file_extension_valid(
                 file=file,
