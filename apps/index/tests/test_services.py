@@ -3,7 +3,6 @@ import os.path
 
 from django.test import TestCase
 
-from index.models import Vacancy
 from index.services import (
     get_vacancy,
     send_response,
@@ -56,15 +55,18 @@ class ServicesTest(TestCase):
             (400, 'required_email'),
             (400, 'required_resume'),
         )
-        vacancy = Vacancy.objects.get(pk=1)
 
         for code, name in fixtures:
             fixture = f'{code}_{name}'
             with open(f'{path}/{fixture}_request.json') as file:
                 data = json.load(file)
 
-            if data.get('file_path') is not None:
-                data['resume'] = open(f"{self.files}/{data['file_path']}", 'rb')
+            file_path = data.get('file_path')
+
+            if file_path is not None:
+                # with open(f"{self.files}/{file_path}", 'rb') as file:
+                #     data['resume'] = file
+                data['resume'] = open(f"{self.files}/{file_path}", 'rb')
 
             response = self.client.post(
                 '/',
@@ -75,7 +77,11 @@ class ServicesTest(TestCase):
 
             status_code = send_response(
                 request=request,
-                vacancy=vacancy,
+                pk=1,
             )
+
+            file = data.get('resume')
+            if file:
+                file.close()
 
             self.assertEqual(status_code, code, msg=fixture)
